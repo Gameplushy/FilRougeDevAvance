@@ -1,0 +1,37 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConnectionToLife.GameOfLife
+{
+    internal class Board
+    {
+        const int BOARDSIZE = 50;
+
+        bool[,] board;
+        List<int> birthRules;
+        List<int> surviveRules;
+
+        public Board(string profile)
+        {
+            //Format : ##A##D;
+            board = new bool[BOARDSIZE, BOARDSIZE];
+            if (!profile.Contains("A") || !profile.EndsWith("D"))
+                throw new FormatException("Should be ##A##D");
+            surviveRules = profile.Substring(0, profile.IndexOf("A")).ToCharArray().Select(n => int.Parse(n.ToString())).ToList();
+            birthRules = profile.Substring(profile.IndexOf("A")+1).SkipLast(1).Select(n => int.Parse(n.ToString())).ToList();
+        }
+
+        public string DisplayBoard()
+        {
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0; i < BOARDSIZE; i++)
+            {
+                sb.AppendLine(string.Join("",Enumerable.Range(0, BOARDSIZE).Select(e => board[i, e]).Select(b => b ? "*" : ".")));
+            }
+            return sb.ToString();
+        }
+    }
+}
