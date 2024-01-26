@@ -4,7 +4,7 @@ namespace ConnectionToLife.GameOfLife
 {
     public class Board
     {
-        public const int BOARDSIZE = 50;
+        public const int BOARDSIZE = 20;
 
         bool[,] board;
         List<int> birthRules;
@@ -41,7 +41,7 @@ namespace ConnectionToLife.GameOfLife
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < BOARDSIZE; i++)
             {
-                sb.AppendLine(string.Join("", Enumerable.Range(0, BOARDSIZE).Select(e => board[i, e]).Select(b => b ? "*" : ".")));
+                sb.AppendLine(string.Join("", Enumerable.Range(0, BOARDSIZE).Select(e => board[i, e]).Select(b => b ? "X" : "·")));
             }
             return sb.ToString();
         }
