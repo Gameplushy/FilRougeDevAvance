@@ -6,13 +6,17 @@ using System.Threading.Tasks;
 
 namespace ConnectionToLife.GameOfLife
 {
-    internal class Board
+    public class Board
     {
-        const int BOARDSIZE = 50;
+        public const int BOARDSIZE = 50;
 
         bool[,] board;
         List<int> birthRules;
         List<int> surviveRules;
+
+        public bool[,] LiveBoard { get => board; set => board = value; }
+        public List<int> BirthRules { get => birthRules; }
+        public List<int> SurviveRules { get => surviveRules; }
 
         public Board(string profile)
         {
