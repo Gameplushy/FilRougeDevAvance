@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34511.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectionToLife", "ConnectionToLife.csproj", "{10B4EA7C-B019-473F-BAF5-2B66A566049A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{10B4EA7C-B019-473F-BAF5-2B66A566049A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10B4EA7C-B019-473F-BAF5-2B66A566049A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10B4EA7C-B019-473F-BAF5-2B66A566049A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10B4EA7C-B019-473F-BAF5-2B66A566049A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DCF6EBF4-D74E-4E86-87A9-E092683ABAF6}
+	EndGlobalSection
+EndGlobal
