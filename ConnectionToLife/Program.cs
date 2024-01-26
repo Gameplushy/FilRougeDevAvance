@@ -5,11 +5,23 @@ var b = new Board("23A3D");
 b.GenerateRandomBoard();
 Console.WriteLine(b.DisplayBoard());
 Console.ReadLine();
-for (int i = 0; i < 10; i++)
-{
-    GameRulesChecker.Iterate(b);
-    Console.Clear();
-    Console.WriteLine(b.DisplayBoard());
-    Console.Read();
-}
+Thread t = new Thread(new ThreadStart(Iterate));
+t.Start();
+Console.ReadLine();
+t.Interrupt();
 
+
+void Iterate()
+{
+    for (int i = 0; i < 10000; i++)
+    {
+        GameRulesChecker.Iterate(b);
+        Console.Clear();
+        Console.WriteLine(b.DisplayBoard());
+        try
+        {
+            Thread.Sleep(500);
+        }
+        catch(ThreadInterruptedException tie) { break; }
+    }
+}
