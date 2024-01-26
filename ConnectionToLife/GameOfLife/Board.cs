@@ -24,6 +24,18 @@ namespace ConnectionToLife.GameOfLife
             birthRules = profile.Substring(profile.IndexOf("A")+1).SkipLast(1).Select(n => int.Parse(n.ToString())).ToList();
         }
 
+        public void GenerateRandomBoard()
+        {
+            Random rng = new Random();
+            for (int i = 0; i < BOARDSIZE; i++)
+            {
+                for (int j = 0; j < BOARDSIZE; j++)
+                {
+                    board[i, j] = rng.Next() % 2 == 0;
+                }
+            }
+        }
+
         public string DisplayBoard()
         {
             StringBuilder sb = new StringBuilder();
