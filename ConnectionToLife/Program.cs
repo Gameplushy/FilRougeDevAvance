@@ -1,9 +1,17 @@
 ﻿using ConnectionToLife.Connection;
 using ConnectionToLife.GameOfLife;
+using System.Net.Sockets;
 
 User user = UserConnect.ConnectionPrompt();
+Socket socketToTalk = await Chat.ConnectToChatAsync(user.user);
+bool wantToTalk = true;
+do
+{
+    wantToTalk = Chat.Talk(socketToTalk, user.user);
+}
+while (wantToTalk);
 
-var b = new Board(user.rules);
+/*var b = new Board(user.rules);
 b.GenerateRandomBoard();
 Console.WriteLine(b.DisplayBoard());
 Console.WriteLine($"Code règles : {user.rules}");
@@ -28,7 +36,7 @@ void Iterate()
         }
         catch (ThreadInterruptedException tie) { break; }
     }
-}
+}*/
 
 // Get user input for the password
 /*string password = "sosis";

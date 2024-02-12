@@ -7,11 +7,8 @@ namespace ConnectionToLife.Connection
     {
         public static User ConnectionPrompt()
         {
-            User supposedUser;
-            MongoClient client = new MongoClient("mongodb+srv://victorflorent888:yYOzEK0yxEsKmb3c@cluster0.wmqs6p0.mongodb.net/COL?retryWrites=true&w=majority");
             do
             {
-                supposedUser = null;
                 Console.Write("Insérer login : ");
                 string login = Console.ReadLine();
                 Console.Write("Insérer mdp : ");
@@ -24,27 +21,40 @@ namespace ConnectionToLife.Connection
                     password += key.KeyChar;
                 }
                 Console.WriteLine();
-                var collect = client.GetDatabase("COL").GetCollection<User>("Users");
-                FilterDefinition<User> fd = Builders<User>.Filter.Eq("user", login);
-                supposedUser = collect.Find(fd).FirstOrDefault();
-                if (supposedUser == null)
+                var res = ConnectionToDatabse(login, password);
+                if (!string.IsNullOrEmpty(res.error))
                 {
-                    Console.WriteLine("Login incorrect.");
-                    continue;
+                    Console.WriteLine(res.error);
                 }
-                var hashedPw = HashTool.HashPassword(password, Convert.FromBase64String(supposedUser.salt));
-                if (supposedUser.password != hashedPw)
+                else
                 {
-                    Console.WriteLine("Mot de passe incorrect.");
-                    continue;
+                    Console.WriteLine($"Bonjour {res.res!.user}!");
+                    return res.res;
                 }
-                break;
-                //Check for valid login
-                //Encrypt password;
             }
             while (true);
-            Console.WriteLine($"Bonjour {supposedUser.user}!");
-            return supposedUser;
+
+        }
+
+        public static (User? res,string? error) ConnectionToDatabse(string login, string password)
+        {
+            User supposedUser;
+            MongoClient client = new MongoClient("mongodb+srv://victorflorent888:yYOzEK0yxEsKmb3c@cluster0.wmqs6p0.mongodb.net/COL?retryWrites=true&w=majority");
+            var collect = client.GetDatabase("COL").GetCollection<User>("Users");
+            FilterDefinition<User> fd = Builders<User>.Filter.Eq("user", login);
+            supposedUser = collect.Find(fd).FirstOrDefault();
+            if (supposedUser == null)
+            {
+                //Console.WriteLine("Login incorrect.");
+                return (null, "Login incorrect.");
+            }
+            var hashedPw = HashTool.HashPassword(password, Convert.FromBase64String(supposedUser.salt));
+            if (supposedUser.password != hashedPw)
+            {
+                //Console.WriteLine("Mot de passe incorrect.");
+                return (null, "Mot de passe incorrect.");
+            }
+            return (supposedUser, null);
         }
     }
 }
