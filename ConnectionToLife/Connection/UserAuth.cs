@@ -3,7 +3,7 @@ using MongoDB.Driver;
 
 namespace ConnectionToLife.Connection
 {
-    public class UserConnect
+    public class UserAuth
     {
         public static User ConnectionPrompt()
         {
@@ -28,7 +28,7 @@ namespace ConnectionToLife.Connection
                 }
                 else
                 {
-                    Console.WriteLine($"Bonjour {res.res!.user}!");
+                    Console.WriteLine($"Bonjour {res.res!.Username}!");
                     return res.res;
                 }
             }
@@ -48,8 +48,8 @@ namespace ConnectionToLife.Connection
                 //Console.WriteLine("Login incorrect.");
                 return (null, "Login incorrect.");
             }
-            var hashedPw = HashTool.HashPassword(password, Convert.FromBase64String(supposedUser.salt));
-            if (supposedUser.password != hashedPw)
+            var hashedPw = HashTool.HashPassword(password, Convert.FromBase64String(supposedUser.PasswordSalt));
+            if (supposedUser.Password != hashedPw)
             {
                 //Console.WriteLine("Mot de passe incorrect.");
                 return (null, "Mot de passe incorrect.");

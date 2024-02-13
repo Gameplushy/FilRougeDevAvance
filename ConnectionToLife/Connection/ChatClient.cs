@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ConnectionToLife.Connection
 {
-    public static class Chat
+    public static class ChatClient
     {
         public static async Task<Socket> ConnectToChatAsync(string login)
         {

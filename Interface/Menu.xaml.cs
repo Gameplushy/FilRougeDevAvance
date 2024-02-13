@@ -20,10 +20,10 @@ namespace Interface
         {
             this.user = user;
             InitializeComponent();
-            tbRules.Text = user.rules;
-            b = new Board(user.rules);
+            tbRules.Text = user.Rules;
+            b = new Board(user.Rules);
             b.GenerateRandomBoard();
-            s = Chat.ConnectToChat(user.user);
+            s = ChatClient.ConnectToChat(user.Username);
             chatThread = new Thread(new ThreadStart(() =>Listen(s)));
             chatThread.Start();
         }
@@ -67,7 +67,7 @@ namespace Interface
 
         private async void btnSend_Click(object sender, RoutedEventArgs e)
         {
-            await s.SendAsync(System.Text.Encoding.Unicode.GetBytes($"{user.user}>{tbMessage.Text}"));
+            await s.SendAsync(System.Text.Encoding.Unicode.GetBytes($"{user.Username}>{tbMessage.Text}"));
             tbMessage.Text = null;
         }
         public void Listen(Socket s)

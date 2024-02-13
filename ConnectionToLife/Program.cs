@@ -2,12 +2,12 @@
 using ConnectionToLife.GameOfLife;
 using System.Net.Sockets;
 
-User user = UserConnect.ConnectionPrompt();
-Socket socketToTalk = await Chat.ConnectToChatAsync(user.user);
+User user = UserAuth.ConnectionPrompt();
+Socket socketToTalk = await ChatClient.ConnectToChatAsync(user.Username);
 bool wantToTalk = true;
 do
 {
-    wantToTalk = Chat.Talk(socketToTalk, user.user);
+    wantToTalk = ChatClient.Talk(socketToTalk, user.Username);
 }
 while (wantToTalk);
 

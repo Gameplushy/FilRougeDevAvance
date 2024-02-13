@@ -18,7 +18,7 @@
         <TextBlock x:Name="tbGrid" Grid.Column="0" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontFamily="Consolas"/>
         <TextBlock x:Name="tbChat" Grid.Column="1" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
         <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <TextBox x:Name="tbMessage" MinWidth="150"/>
+            <TextBox x:Name="tbMessage" Width="150" TextWrapping="Wrap"/>
             <Button x:Name="btnSend" Content="Send" HorizontalAlignment="Right" Click="btnSend_Click"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">

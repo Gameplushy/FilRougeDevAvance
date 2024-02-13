@@ -6,10 +6,15 @@ namespace ConnectionToLife.Connection
     public class User
     {
         [BsonId]
-        ObjectId _id { get; set; }
-        public string user { get; set; }
-        public string salt { get; set; }
-        public string password { get; set; }
-        public string rules { get; set; }
+        [BsonElement("_id")]
+        ObjectId Id { get; set; }
+        [BsonElement("user")]
+        public string Username { get; set; }
+        [BsonElement("salt")]
+        public string PasswordSalt { get; set; }
+        [BsonElement("password")]
+        public string Password { get; set; }
+        [BsonElement("rules")]
+        public string Rules { get; set; }
     }
 }

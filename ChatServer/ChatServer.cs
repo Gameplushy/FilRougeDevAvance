@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ChatServer
 {
-    public static class Chat
+    public static class ChatServer
     {
         private static List<Socket> sockets = new();
 
