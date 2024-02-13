@@ -45,13 +45,11 @@ namespace ConnectionToLife.Connection
             supposedUser = collect.Find(fd).FirstOrDefault();
             if (supposedUser == null)
             {
-                //Console.WriteLine("Login incorrect.");
                 return (null, "Login incorrect.");
             }
             var hashedPw = HashTool.HashPassword(password, Convert.FromBase64String(supposedUser.PasswordSalt));
             if (supposedUser.Password != hashedPw)
             {
-                //Console.WriteLine("Mot de passe incorrect.");
                 return (null, "Mot de passe incorrect.");
             }
             return (supposedUser, null);

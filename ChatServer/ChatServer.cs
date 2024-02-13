@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using ConnectionToLife.GameOfLife;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ChatServer
 {
@@ -22,7 +19,7 @@ namespace ChatServer
             {
                 Socket socketAccepted = await s.AcceptAsync();
                 sockets.Add(socketAccepted);
-                Thread listener = new Thread(()=>Listen(socketAccepted));
+                Thread listener = new Thread(() => Listen(socketAccepted));
                 listener.Start();
             }
         }
@@ -31,16 +28,21 @@ namespace ChatServer
         {
             try
             {
-                s.Send(System.Text.Encoding.Unicode.GetBytes("Connection established."));
+                s.Send(Encoding.Unicode.GetBytes("Connection established."));
                 while (true)
                 {
                     byte[] buffer = new byte[512];
                     s.Receive(buffer, 0, buffer.Length, SocketFlags.None);
-                    sockets.ForEach(socket => socket.Send(buffer));
-                    Console.WriteLine(System.Text.UnicodeEncoding.Unicode.GetString(buffer));
+                    string res = Encoding.Unicode.GetString(buffer);
+                    if (buffer[0] <= 1)
+                    {
+                        res = string.Join("", buffer.Take(Board.BOARDSIZE * Board.BOARDSIZE).Select(by => by == 1 ? 'X' : '·'));
+                    }
+                    sockets.ForEach(socket => socket.Send(Encoding.Unicode.GetBytes(res)));
+                    Console.WriteLine(res);
                 }
             }
-            catch(SocketException se)
+            catch (SocketException se)
             {
                 s.Close();
             }

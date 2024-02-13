@@ -12,7 +12,7 @@ namespace Interface
     public partial class Menu : Window
     {
         private User user;
-        private Thread iterationThread, chatThread;
+        private Thread? iterationThread, chatThread;
         private Board b;
         private Socket s;
 
@@ -51,7 +51,7 @@ namespace Interface
             }
         }
 
-        private void btnStartStop_Click(object sender, RoutedEventArgs e)
+        private async void btnStartStop_Click(object sender, RoutedEventArgs e)
         {
             if (iterationThread == null)
             {
@@ -62,12 +62,14 @@ namespace Interface
             {
                 iterationThread.Interrupt();
                 iterationThread = null;
+                await s.SendAsync(b.ToBytes());
+                await s.SendAsync(Encoding.Unicode.GetBytes($"NEWRULE>{user.Username}>{user.Rules}"));
             }
         }
 
         private async void btnSend_Click(object sender, RoutedEventArgs e)
         {
-            await s.SendAsync(System.Text.Encoding.Unicode.GetBytes($"{user.Username}>{tbMessage.Text}"));
+            await s.SendAsync(Encoding.Unicode.GetBytes($"{user.Username}>{tbMessage.Text}"));
             tbMessage.Text = null;
         }
         public void Listen(Socket s)
@@ -78,8 +80,34 @@ namespace Interface
                 {
                     byte[] buffer = new byte[512];
                     s.Receive(buffer, 0, buffer.Length, SocketFlags.None);
-                    this.Dispatcher.Invoke(() => tbChat.Text += System.Text.UnicodeEncoding.Unicode.GetString(buffer)+'\n');
-                    //Console.WriteLine(System.Text.UnicodeEncoding.Unicode.GetString(buffer));
+                    iterationThread?.Interrupt();
+                    string message = Encoding.Unicode.GetString(buffer);
+                    if (message.StartsWith("NEWRULE>"))
+                    {
+                        if (message.Split(">")[1] != user.Username)
+                        {
+                            string newRule = message.Split(">")[2];
+                            if(MessageBox.Show($"Nouvelle règle : {newRule} ?","Notif",MessageBoxButton.YesNo,MessageBoxImage.Question) == MessageBoxResult.Yes)
+                            {
+                                b.SetRules(newRule);
+                                Dispatcher.Invoke(() => tbRules.Text = newRule);
+                            }
+                        }
+                    }
+                    else if (message.Take(Board.BOARDSIZE*Board.BOARDSIZE).All(c=>c=='X'||c== '·'))
+                    {
+                        StringBuilder sb = new();
+                        for(int i =0; i<(Board.BOARDSIZE*Board.BOARDSIZE); i += Board.BOARDSIZE)
+                        {
+                            sb.AppendLine(message.Substring(i, Board.BOARDSIZE));
+                        }
+                        Dispatcher.Invoke(() => tbGrid.Text = sb.ToString());
+                        b.FromString(message.Substring(0, Board.BOARDSIZE * Board.BOARDSIZE));
+                    }
+                    else
+                    {
+                        Dispatcher.Invoke(() => tbChat.Text += message + '\n');
+                    }
                 }
             }
             catch (SocketException se)
