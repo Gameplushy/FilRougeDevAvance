@@ -24,8 +24,6 @@ namespace ConnectionToLife.Connection
 
             s.Send(Encoding.Unicode.GetBytes($"{login}>Hello world"));
             return s;
-            //s.Close();def
-            //Socket s = new Socket();
         }
 
         internal static bool Talk(Socket socketToTalk, string user)

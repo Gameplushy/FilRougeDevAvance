@@ -20,11 +20,18 @@ namespace ChatServer
             s.Listen(5);
             while (true)
             {
-                Socket socketAccepted = await s.AcceptAsync();
-                sockets.Add(socketAccepted);
-                Thread listener = new Thread(() => Listen(socketAccepted));
-                vote = null;
-                listener.Start();
+                try
+                {
+                    Socket socketAccepted = await s.AcceptAsync();
+                    sockets.Add(socketAccepted);
+                    Thread listener = new Thread(() => Listen(socketAccepted));
+                    vote = null;
+                    listener.Start();
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
             }
         }
 
