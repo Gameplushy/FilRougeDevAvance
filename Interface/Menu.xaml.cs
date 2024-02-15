@@ -13,18 +13,18 @@ namespace Interface
     {
         private User user;
         private Thread? iterationThread, chatThread;
-        private Board b;
-        private Socket s;
+        private Board board;
+        private Socket socket;
 
         public Menu(User user)
         {
             this.user = user;
             InitializeComponent();
             tbRules.Text = user.Rules;
-            b = new Board(user.Rules);
-            b.GenerateRandomBoard();
-            s = ChatClient.ConnectToChat(user.Username);
-            chatThread = new Thread(new ThreadStart(() =>Listen(s)));
+            board = new Board(user.Rules);
+            board.GenerateRandomBoard();
+            socket = ChatClient.ConnectToChat(user.Username);
+            chatThread = new Thread(new ThreadStart(() =>Listen(socket)));
             chatThread.Start();
         }
 
@@ -33,11 +33,11 @@ namespace Interface
             try
             {
 
-                this.Dispatcher.Invoke(() => tbGrid.Text = b.DisplayBoard());
+                this.Dispatcher.Invoke(() => tbGrid.Text = board.DisplayBoard());
                 for (int i = 0; i < 10000; i++)
                 {
-                    GameRulesChecker.Iterate(b);
-                    this.Dispatcher.Invoke(() => tbGrid.Text = b.DisplayBoard());
+                    GameRulesChecker.Iterate(board);
+                    this.Dispatcher.Invoke(() => tbGrid.Text = board.DisplayBoard());
                     try
                     {
                         Thread.Sleep(500);
@@ -62,14 +62,13 @@ namespace Interface
             {
                 iterationThread.Interrupt();
                 iterationThread = null;
-                await s.SendAsync(b.ToBytes());
-                //await s.SendAsync(Encoding.Unicode.GetBytes($"NEWRULE>{user.Username}>{user.Rules}"));
+                await socket.SendAsync(board.ToBytes());
             }
         }
 
         private async void btnSend_Click(object sender, RoutedEventArgs e)
         {
-            await s.SendAsync(Encoding.Unicode.GetBytes($"{user.Username}>{tbMessage.Text}"));
+            await socket.SendAsync(Encoding.Unicode.GetBytes($"{user.Username}>{tbMessage.Text}"));
             tbMessage.Text = null;
         }
         public void Listen(Socket s)
@@ -85,7 +84,7 @@ namespace Interface
                     if (message.StartsWith("NEWRULE>"))
                     {
                         string newRule = message.Split(">")[1];
-                        b.SetRules(newRule);
+                        board.SetRules(newRule);
                         Dispatcher.Invoke(() => tbRules.Text = newRule);
                     }
                     else if (message.Take(Board.BOARDSIZE*Board.BOARDSIZE).All(c=>c=='X'||c== '·'))
@@ -96,7 +95,7 @@ namespace Interface
                             sb.AppendLine(message.Substring(i, Board.BOARDSIZE));
                         }
                         Dispatcher.Invoke(() => tbGrid.Text = sb.ToString());
-                        b.FromString(message.Substring(0, Board.BOARDSIZE * Board.BOARDSIZE));
+                        board.FromString(message.Substring(0, Board.BOARDSIZE * Board.BOARDSIZE));
                     }
                     else
                     {
