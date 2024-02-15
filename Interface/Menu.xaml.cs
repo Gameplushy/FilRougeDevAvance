@@ -63,7 +63,7 @@ namespace Interface
                 iterationThread.Interrupt();
                 iterationThread = null;
                 await s.SendAsync(b.ToBytes());
-                await s.SendAsync(Encoding.Unicode.GetBytes($"NEWRULE>{user.Username}>{user.Rules}"));
+                //await s.SendAsync(Encoding.Unicode.GetBytes($"NEWRULE>{user.Username}>{user.Rules}"));
             }
         }
 
@@ -84,15 +84,9 @@ namespace Interface
                     string message = Encoding.Unicode.GetString(buffer);
                     if (message.StartsWith("NEWRULE>"))
                     {
-                        if (message.Split(">")[1] != user.Username)
-                        {
-                            string newRule = message.Split(">")[2];
-                            if(MessageBox.Show($"Nouvelle règle : {newRule} ?","Notif",MessageBoxButton.YesNo,MessageBoxImage.Question) == MessageBoxResult.Yes)
-                            {
-                                b.SetRules(newRule);
-                                Dispatcher.Invoke(() => tbRules.Text = newRule);
-                            }
-                        }
+                        string newRule = message.Split(">")[1];
+                        b.SetRules(newRule);
+                        Dispatcher.Invoke(() => tbRules.Text = newRule);
                     }
                     else if (message.Take(Board.BOARDSIZE*Board.BOARDSIZE).All(c=>c=='X'||c== '·'))
                     {
