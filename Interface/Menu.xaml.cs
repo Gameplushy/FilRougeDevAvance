@@ -3,6 +3,9 @@ using ConnectionToLife.GameOfLife;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace Interface
 {
@@ -15,6 +18,7 @@ namespace Interface
         private Thread? iterationThread, chatThread;
         private Board board;
         private Socket socket;
+        private Rectangle[,] gridUI = new Rectangle[10,10];
 
         public Menu(User user)
         {
@@ -26,6 +30,23 @@ namespace Interface
             socket = ChatClient.ConnectToChat(user.Username);
             chatThread = new Thread(new ThreadStart(() =>Listen(socket)));
             chatThread.Start();
+            for(int i = 0; i < 10; i++)
+            {
+                for(int j=0;j < 10; j++)
+                {
+                    Rectangle r = new Rectangle()
+                    {
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        Fill = new SolidColorBrush(Colors.White),
+                        Stroke = new SolidColorBrush(Colors.Black)
+                    };
+                    Grid.SetRow(r, i);
+                    Grid.SetColumn(r, j);
+                    gridUI[i, j] = r;
+                    gdGOL.Children.Add(r);
+                }
+            }
         }
 
         void Iterate()
@@ -33,11 +54,11 @@ namespace Interface
             try
             {
 
-                this.Dispatcher.Invoke(() => tbGrid.Text = board.DisplayBoard());
+                this.Dispatcher.Invoke(() => MakeGrid(board.DisplayBoard()));
                 for (int i = 0; i < 10000; i++)
                 {
                     GameRulesChecker.Iterate(board);
-                    this.Dispatcher.Invoke(() => tbGrid.Text = board.DisplayBoard());
+                    this.Dispatcher.Invoke(() => MakeGrid(board.DisplayBoard()));
                     try
                     {
                         Thread.Sleep(500);
@@ -89,13 +110,7 @@ namespace Interface
                     }
                     else if (message.Take(Board.BOARDSIZE*Board.BOARDSIZE).All(c=>c=='X'||c== '·'))
                     {
-                        StringBuilder sb = new();
-                        for(int i =0; i<(Board.BOARDSIZE*Board.BOARDSIZE); i += Board.BOARDSIZE)
-                        {
-                            sb.AppendLine(message.Substring(i, Board.BOARDSIZE));
-                        }
-                        Dispatcher.Invoke(() => tbGrid.Text = sb.ToString());
-                        board.FromString(message.Substring(0, Board.BOARDSIZE * Board.BOARDSIZE));
+                        MakeGrid(message);
                     }
                     else
                     {
@@ -107,6 +122,23 @@ namespace Interface
             {
                 s.Close();
             }
+        }
+
+        private void MakeGrid(string gridText)
+        {
+            for(int n = 0; n < Board.BOARDSIZE * Board.BOARDSIZE; n++)
+            {
+                Dispatcher.Invoke(() => gridUI[n / Board.BOARDSIZE, n % Board.BOARDSIZE].Fill = gridText[n] == 'X' ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.White));
+                
+            }
+            /*StringBuilder sb = new();
+            for (int i = 0; i < (Board.BOARDSIZE * Board.BOARDSIZE); i += Board.BOARDSIZE)
+            {
+                sb.AppendLine(gridText.Substring(i, Board.BOARDSIZE));
+            }
+            Dispatcher.Invoke(() => tbGrid.Text = sb.ToString());*/
+            board.FromString(gridText.Substring(0, Board.BOARDSIZE * Board.BOARDSIZE));
+
         }
     }
 }
