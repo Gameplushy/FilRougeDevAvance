@@ -4,7 +4,7 @@ namespace ConnectionToLife.GameOfLife
 {
     public class Board
     {
-        public const int BOARDSIZE = 10;
+        public const int BOARDSIZE = 12;
 
         bool[,] board;
         List<int> birthRules;

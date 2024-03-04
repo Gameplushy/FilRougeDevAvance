@@ -18,7 +18,7 @@ namespace Interface
         private Thread? iterationThread, chatThread;
         private Board board;
         private Socket socket;
-        private Rectangle[,] gridUI = new Rectangle[10,10];
+        private Rectangle[,] gridUI = new Rectangle[Board.BOARDSIZE,Board.BOARDSIZE];
 
         public Menu(User user)
         {
@@ -30,9 +30,14 @@ namespace Interface
             socket = ChatClient.ConnectToChat(user.Username);
             chatThread = new Thread(new ThreadStart(() =>Listen(socket)));
             chatThread.Start();
-            for(int i = 0; i < 10; i++)
+            for(int i = 0; i < Board.BOARDSIZE; i++)
             {
-                for(int j=0;j < 10; j++)
+                gdGOL.ColumnDefinitions.Add(new ColumnDefinition());
+                gdGOL.RowDefinitions.Add(new RowDefinition());
+            }
+            for(int i = 0; i < Board.BOARDSIZE; i++)
+            {
+                for(int j=0;j < Board.BOARDSIZE; j++)
                 {
                     Rectangle r = new Rectangle()
                     {
