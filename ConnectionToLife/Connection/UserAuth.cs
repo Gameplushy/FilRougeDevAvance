@@ -39,8 +39,9 @@ namespace ConnectionToLife.Connection
         public static (User? res,string? error) ConnectionToDatabse(string login, string password)
         {
             User supposedUser;
-            MongoClient client = new MongoClient("mongodb+srv://BDDReader:5cWvQ32s5szGdckL@cluster0.wmqs6p0.mongodb.net/COL?retryWrites=true&w=majority");
-            var collect = client.GetDatabase("COL").GetCollection<User>("Users");
+            string databaseName = ConfigReader.Get("Database");
+            MongoClient client = new MongoClient($"mongodb+srv://BDDReader:5cWvQ32s5szGdckL@cluster0.wmqs6p0.mongodb.net/{databaseName}?retryWrites=true&w=majority");
+            var collect = client.GetDatabase(databaseName).GetCollection<User>("Users");
             FilterDefinition<User> fd = Builders<User>.Filter.Eq("user", login);
             supposedUser = collect.Find(fd).FirstOrDefault();
             if (supposedUser == null)
