@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatServer", "..\ChatServer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interface", "..\Interface\Interface.csproj", "{0DF46060-025E-4908-96DD-AC72BB1FB817}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsUnitaires", "..\TestsUnitaires\TestsUnitaires.csproj", "{552FDD80-26EA-4391-9DAA-CF483BCA25D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestsUnitaires", "..\TestsUnitaires\TestsUnitaires.csproj", "{552FDD80-26EA-4391-9DAA-CF483BCA25D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APICTL", "..\APICTL\APICTL.csproj", "{897A7693-5F69-4DBD-89E8-D014A0AA5BD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{552FDD80-26EA-4391-9DAA-CF483BCA25D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{552FDD80-26EA-4391-9DAA-CF483BCA25D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{552FDD80-26EA-4391-9DAA-CF483BCA25D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{897A7693-5F69-4DBD-89E8-D014A0AA5BD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{897A7693-5F69-4DBD-89E8-D014A0AA5BD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{897A7693-5F69-4DBD-89E8-D014A0AA5BD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{897A7693-5F69-4DBD-89E8-D014A0AA5BD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

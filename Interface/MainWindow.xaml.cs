@@ -1,4 +1,9 @@
-﻿using System.Windows;
+﻿using System.Net.Http.Headers;
+using System.Net.Http;
+using System.Windows;
+using ConnectionToLife.Connection;
+using System.Net.Http.Json;
+using APICTL.Models;
 
 namespace Interface
 {
@@ -12,21 +17,31 @@ namespace Interface
             InitializeComponent();
         }
 
-        private void btnConnect_Click(object sender, RoutedEventArgs e)
+        private async void btnConnect_Click(object sender, RoutedEventArgs e)
         {
-            var res = ConnectionToLife.Connection.UserAuth.ConnectionToDatabse(tbUsername.Text, pbPassword.Password);
-            if (!string.IsNullOrEmpty(res.error))
+            //var res;// = APICTL.Controllers.AuthenticationController//ConnectionToLife.Connection.UserAuth.ConnectionToDatabse(tbUsername.Text, pbPassword.Password);
+            using (var client = new HttpClient())
             {
-                MessageBox.Show(res.error, "Connection error", MessageBoxButton.OK, MessageBoxImage.Error);
+                client.BaseAddress = new Uri("http://localhost:5085/");
+                //client.DefaultRequestHeaders.Accept.Clear();
+                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage response = await client.PostAsJsonAsync("/Authentication",new Credentials() { Login = tbUsername.Text, Password = pbPassword.Password}); //API controller name
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<User>();
+                    //MessageBox.Show($"Hello {res.res!.Username}!");
+                    var win = new Menu(result);
+                    Visibility = Visibility.Hidden;
+                    win.Show();
+                    this.Close();
+                    
+                }
+                else
+                {
+                    MessageBox.Show("Bad credentials", "Connection error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
-            else
-            {
-                //MessageBox.Show($"Hello {res.res!.Username}!");
-                var win = new Menu(res.res);
-                Visibility = Visibility.Hidden;
-                win.Show();
-                this.Close();
-            }
+
         }
     }
 }

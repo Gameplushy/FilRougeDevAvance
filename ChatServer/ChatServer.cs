@@ -14,7 +14,7 @@ namespace ChatServer
 
         public static async Task ConnectToChat()
         {
-            IPAddress ip = IPAddress.Parse("10.70.3.61");//IPAddress.Parse("192.168.1.11");//
+            IPAddress ip = IPAddress.Parse("192.168.1.11");
             Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             s.Bind(new IPEndPoint(ip, 6969));
             s.Listen(5);
