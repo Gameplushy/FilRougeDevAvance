@@ -8,7 +8,7 @@ namespace ConnectionToLife.Connection
     {
         public static async Task<Socket> ConnectToChatAsync(string login)
         {
-            IPAddress ip = IPAddress.Parse("10.70.5.60");
+            IPAddress ip = IPAddress.Parse("10.70.3.61");//IPAddress.Parse("192.168.1.11");//
             Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             await s.ConnectAsync(new IPEndPoint(ip, 6969));
 
@@ -18,14 +18,12 @@ namespace ConnectionToLife.Connection
 
         public static Socket ConnectToChat(string login)
         {
-            IPAddress ip = IPAddress.Parse("10.70.5.60");
+            IPAddress ip = IPAddress.Parse("10.70.3.61"); //IPAddress.Parse("192.168.1.11");
             Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             s.Connect(new IPEndPoint(ip, 6969));
 
             s.Send(Encoding.Unicode.GetBytes($"{login}>Hello world"));
             return s;
-            //s.Close();def
-            //Socket s = new Socket();
         }
 
         internal static bool Talk(Socket socketToTalk, string user)

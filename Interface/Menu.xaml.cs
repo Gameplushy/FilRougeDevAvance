@@ -3,6 +3,9 @@ using ConnectionToLife.GameOfLife;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace Interface
 {
@@ -13,19 +16,42 @@ namespace Interface
     {
         private User user;
         private Thread? iterationThread, chatThread;
-        private Board b;
-        private Socket s;
+        private Board board;
+        private Socket socket;
+        private Rectangle[,] gridUI = new Rectangle[Board.BOARDSIZE,Board.BOARDSIZE];
 
         public Menu(User user)
         {
             this.user = user;
             InitializeComponent();
             tbRules.Text = user.Rules;
-            b = new Board(user.Rules);
-            b.GenerateRandomBoard();
-            s = ChatClient.ConnectToChat(user.Username);
-            chatThread = new Thread(new ThreadStart(() =>Listen(s)));
+            board = new Board(user.Rules);
+            board.GenerateRandomBoard();
+            socket = ChatClient.ConnectToChat(user.Username);
+            chatThread = new Thread(new ThreadStart(() =>Listen(socket)));
             chatThread.Start();
+            for(int i = 0; i < Board.BOARDSIZE; i++)
+            {
+                gdGOL.ColumnDefinitions.Add(new ColumnDefinition());
+                gdGOL.RowDefinitions.Add(new RowDefinition());
+            }
+            for(int i = 0; i < Board.BOARDSIZE; i++)
+            {
+                for(int j=0;j < Board.BOARDSIZE; j++)
+                {
+                    Rectangle r = new Rectangle()
+                    {
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        Fill = new SolidColorBrush(Colors.White),
+                        Stroke = new SolidColorBrush(Colors.Black)
+                    };
+                    Grid.SetRow(r, i);
+                    Grid.SetColumn(r, j);
+                    gridUI[i, j] = r;
+                    gdGOL.Children.Add(r);
+                }
+            }
         }
 
         void Iterate()
@@ -33,11 +59,11 @@ namespace Interface
             try
             {
 
-                this.Dispatcher.Invoke(() => tbGrid.Text = b.DisplayBoard());
+                this.Dispatcher.Invoke(() => MakeGrid(board.DisplayBoard()));
                 for (int i = 0; i < 10000; i++)
                 {
-                    GameRulesChecker.Iterate(b);
-                    this.Dispatcher.Invoke(() => tbGrid.Text = b.DisplayBoard());
+                    GameRulesChecker.Iterate(board);
+                    this.Dispatcher.Invoke(() => MakeGrid(board.DisplayBoard()));
                     try
                     {
                         Thread.Sleep(500);
@@ -62,14 +88,13 @@ namespace Interface
             {
                 iterationThread.Interrupt();
                 iterationThread = null;
-                await s.SendAsync(b.ToBytes());
-                await s.SendAsync(Encoding.Unicode.GetBytes($"NEWRULE>{user.Username}>{user.Rules}"));
+                await socket.SendAsync(board.ToBytes());
             }
         }
 
         private async void btnSend_Click(object sender, RoutedEventArgs e)
         {
-            await s.SendAsync(Encoding.Unicode.GetBytes($"{user.Username}>{tbMessage.Text}"));
+            await socket.SendAsync(Encoding.Unicode.GetBytes($"{user.Username}>{tbMessage.Text}"));
             tbMessage.Text = null;
         }
         public void Listen(Socket s)
@@ -84,25 +109,13 @@ namespace Interface
                     string message = Encoding.Unicode.GetString(buffer);
                     if (message.StartsWith("NEWRULE>"))
                     {
-                        if (message.Split(">")[1] != user.Username)
-                        {
-                            string newRule = message.Split(">")[2];
-                            if(MessageBox.Show($"Nouvelle règle : {newRule} ?","Notif",MessageBoxButton.YesNo,MessageBoxImage.Question) == MessageBoxResult.Yes)
-                            {
-                                b.SetRules(newRule);
-                                Dispatcher.Invoke(() => tbRules.Text = newRule);
-                            }
-                        }
+                        string newRule = message.Split(">")[1];
+                        board.SetRules(newRule);
+                        Dispatcher.Invoke(() => tbRules.Text = newRule);
                     }
                     else if (message.Take(Board.BOARDSIZE*Board.BOARDSIZE).All(c=>c=='X'||c== '·'))
                     {
-                        StringBuilder sb = new();
-                        for(int i =0; i<(Board.BOARDSIZE*Board.BOARDSIZE); i += Board.BOARDSIZE)
-                        {
-                            sb.AppendLine(message.Substring(i, Board.BOARDSIZE));
-                        }
-                        Dispatcher.Invoke(() => tbGrid.Text = sb.ToString());
-                        b.FromString(message.Substring(0, Board.BOARDSIZE * Board.BOARDSIZE));
+                        MakeGrid(message);
                     }
                     else
                     {
@@ -114,6 +127,23 @@ namespace Interface
             {
                 s.Close();
             }
+        }
+
+        private void MakeGrid(string gridText)
+        {
+            for(int n = 0; n < Board.BOARDSIZE * Board.BOARDSIZE; n++)
+            {
+                Dispatcher.Invoke(() => gridUI[n / Board.BOARDSIZE, n % Board.BOARDSIZE].Fill = gridText[n] == 'X' ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.White));
+                
+            }
+            /*StringBuilder sb = new();
+            for (int i = 0; i < (Board.BOARDSIZE * Board.BOARDSIZE); i += Board.BOARDSIZE)
+            {
+                sb.AppendLine(gridText.Substring(i, Board.BOARDSIZE));
+            }
+            Dispatcher.Invoke(() => tbGrid.Text = sb.ToString());*/
+            board.FromString(gridText.Substring(0, Board.BOARDSIZE * Board.BOARDSIZE));
+
         }
     }
 }
