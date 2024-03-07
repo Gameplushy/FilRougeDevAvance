@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Text;
+﻿using System.Text;
 
 namespace APICTL.Models
 {
@@ -48,7 +47,7 @@ namespace APICTL.Models
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < BOARDSIZE; i++)
             {
-                sb.AppendLine(string.Join("",s.Skip(BOARDSIZE*i).Take(BOARDSIZE)));
+                sb.AppendLine(string.Join("", s.Skip(BOARDSIZE * i).Take(BOARDSIZE)));
             }
             return sb.ToString();
         }
@@ -66,7 +65,7 @@ namespace APICTL.Models
         public string ToString()
         {
             string res = "";
-            foreach(bool b in board)
+            foreach (bool b in board)
             {
                 res += b ? "X" : "·";
             }

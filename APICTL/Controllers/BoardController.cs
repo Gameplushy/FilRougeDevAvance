@@ -1,9 +1,5 @@
 using APICTL.Models;
-using APICTL.Utils;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Driver;
 
 namespace APICTL.Controllers
 {
@@ -14,7 +10,6 @@ namespace APICTL.Controllers
         [HttpPost]
         public IActionResult Iterate(BoardRequest currentIteration)
         {
-            //bool[,] newIteration = new bool[Board.BOARDSIZE, Board.BOARDSIZE];
             Board b = new Board(currentIteration.Profile);
             b.FromString(currentIteration.Board);
             string res = "";

@@ -1,8 +1,7 @@
-﻿using System.Net.Http.Headers;
+﻿using APICTL.Models;
 using System.Net.Http;
-using System.Windows;
 using System.Net.Http.Json;
-using APICTL.Models;
+using System.Windows;
 
 namespace Interface
 {
@@ -21,16 +20,15 @@ namespace Interface
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://localhost:5085/");
-                HttpResponseMessage response = await client.PostAsJsonAsync("/Authentication",new Credentials() { Login = tbUsername.Text, Password = pbPassword.Password});
+                HttpResponseMessage response = await client.PostAsJsonAsync("/Authentication", new Credentials() { Login = tbUsername.Text, Password = pbPassword.Password });
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadFromJsonAsync<User>();
-                    //MessageBox.Show($"Hello {res.res!.Username}!");
                     var win = new Menu(result);
                     Visibility = Visibility.Hidden;
                     win.Show();
                     this.Close();
-                    
+
                 }
                 else
                 {

@@ -151,12 +151,6 @@ namespace Interface
                 Dispatcher.Invoke(() => rec.Fill = gridText[i] == 'X' ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.White));
                 i++;
             }
-            /*StringBuilder sb = new();
-            for (int i = 0; i < (Board.BOARDSIZE * Board.BOARDSIZE); i += Board.BOARDSIZE)
-            {
-                sb.AppendLine(gridText.Substring(i, Board.BOARDSIZE));
-            }
-            Dispatcher.Invoke(() => tbGrid.Text = sb.ToString());*/
             board.FromString(gridText.Substring(0, Board.BOARDSIZE * Board.BOARDSIZE));
 
         }
