@@ -61,7 +61,7 @@ namespace Interface
         {
             try
             {
-                this.Dispatcher.Invoke(() => MakeGrid(board.ToString()));
+                this.Dispatcher.Invoke(() => MakeGrid(board.ToOneLine()));
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri("http://localhost:5085/");
@@ -72,7 +72,7 @@ namespace Interface
                         if (response.IsSuccessStatusCode)
                         {
                             board.FromString(await response.Content.ReadAsStringAsync());
-                            this.Dispatcher.Invoke(() => MakeGrid(board.ToString()));
+                            this.Dispatcher.Invoke(() => MakeGrid(board.ToOneLine()));
                         }
 
                         try

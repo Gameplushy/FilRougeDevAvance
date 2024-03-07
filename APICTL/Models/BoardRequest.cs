@@ -12,7 +12,7 @@ namespace APICTL.Models
 
         public BoardRequest(Board b)
         {
-            Board = b.ToString();
+            Board = b.ToOneLine();
             Profile = string.Format("{0}A{1}D", string.Join("", b.SurviveRules), string.Join("", b.BirthRules));
         }
     }

@@ -41,17 +41,6 @@ namespace APICTL.Models
             }
         }
 
-        public string DisplayBoard()
-        {
-            string s = ToString();
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < BOARDSIZE; i++)
-            {
-                sb.AppendLine(string.Join("", s.Skip(BOARDSIZE * i).Take(BOARDSIZE)));
-            }
-            return sb.ToString();
-        }
-
         public byte[] ToBytes()
         {
             List<byte> bytes = new();
@@ -62,7 +51,7 @@ namespace APICTL.Models
             return bytes.ToArray();
         }
 
-        public string ToString()
+        public string ToOneLine()
         {
             string res = "";
             foreach (bool b in board)

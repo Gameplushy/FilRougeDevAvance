@@ -1,4 +1,4 @@
-﻿using ConnectionToLife.GameOfLife;
+﻿using APICTL.Models;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;

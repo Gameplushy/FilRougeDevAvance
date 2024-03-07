@@ -1,4 +1,4 @@
-using ConnectionToLife.GameOfLife;
+using APICTL.Models;
 
 namespace TestsUnitaires
 {
