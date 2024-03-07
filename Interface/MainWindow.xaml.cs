@@ -1,7 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Windows;
-using ConnectionToLife.Connection;
 using System.Net.Http.Json;
 using APICTL.Models;
 
@@ -19,13 +18,10 @@ namespace Interface
 
         private async void btnConnect_Click(object sender, RoutedEventArgs e)
         {
-            //var res;// = APICTL.Controllers.AuthenticationController//ConnectionToLife.Connection.UserAuth.ConnectionToDatabse(tbUsername.Text, pbPassword.Password);
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://localhost:5085/");
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage response = await client.PostAsJsonAsync("/Authentication",new Credentials() { Login = tbUsername.Text, Password = pbPassword.Password}); //API controller name
+                HttpResponseMessage response = await client.PostAsJsonAsync("/Authentication",new Credentials() { Login = tbUsername.Text, Password = pbPassword.Password});
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadFromJsonAsync<User>();

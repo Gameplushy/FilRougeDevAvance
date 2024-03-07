@@ -1,4 +1,4 @@
-﻿using ConnectionToLife.Connection;
+﻿/*using ConnectionToLife.Connection;
 using ConnectionToLife.GameOfLife;
 using System.Net.Sockets;
 
@@ -9,7 +9,9 @@ do
 {
     wantToTalk = ChatClient.Talk(socketToTalk, user.Username);
 }
-while (wantToTalk);
+while (wantToTalk);*/
+
+Console.WriteLine("Hewwo");
 
 /*var b = new Board(user.rules);
 b.GenerateRandomBoard();
