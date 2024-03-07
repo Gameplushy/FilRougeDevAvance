@@ -5,6 +5,8 @@ Projet conçu par Victor Florent
 # Installation
 Le client obtiendra une application WPF. Ce logiciel sera connecté à une application serveur ainsi qu’une API.
 
+Voir le zip dans l'onglet Releases du Git
+
 Veuiller démarrer le serveur (ChatServer) et l'API (APICTL) en localhost avant l'application (Interface).
 
 # Utilisation
