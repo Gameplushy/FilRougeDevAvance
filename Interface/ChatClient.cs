@@ -8,7 +8,7 @@ namespace Interface
     {
         public static async Task<Socket> ConnectToChatAsync(string login)
         {
-            IPAddress ip = IPAddress.Parse("10.70.3.61");
+            IPAddress ip = IPAddress.Parse("127.0.0.1");
             Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             await s.ConnectAsync(new IPEndPoint(ip, 6969));
 
@@ -18,7 +18,7 @@ namespace Interface
 
         public static Socket ConnectToChat(string login)
         {
-            IPAddress ip = IPAddress.Parse("10.70.3.61");
+            IPAddress ip = IPAddress.Parse("127.0.0.1");
             Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             s.Connect(new IPEndPoint(ip, 6969));
 
