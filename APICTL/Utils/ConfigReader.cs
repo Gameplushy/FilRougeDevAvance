@@ -15,6 +15,7 @@ namespace APICTL.Utils
         {
             Config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json")
                 .Build();
         }
 
