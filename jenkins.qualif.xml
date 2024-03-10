@@ -35,6 +35,7 @@
         stage(&apos;Build&apos;) {
             steps {
                 bat &apos;dotnet build&apos;
+                bat &apos;dotnet publish /p:EnvironmentName=Qualif&apos;
             }
         }
     }

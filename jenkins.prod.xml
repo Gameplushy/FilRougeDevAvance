@@ -36,6 +36,7 @@
             steps {
                 // Get some code from a GitHub repository
                 bat &apos;dotnet build&apos;
+                bat &apos;dotnet publish /p:EnvironmentName=Prod&apos;
             }
         }
     }
