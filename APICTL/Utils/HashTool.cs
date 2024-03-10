@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace ConnectionToLife.Utils
+namespace APICTL.Utils
 {
     public class HashTool
     {

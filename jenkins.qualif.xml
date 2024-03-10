@@ -11,16 +11,31 @@
   </actions>
   <description></description>
   <keepDependencies>false</keepDependencies>
-  <properties/>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers>
+        <hudson.triggers.SCMTrigger>
+          <spec>H * * * *</spec>
+          <ignorePostCommitHooks>false</ignorePostCommitHooks>
+        </hudson.triggers.SCMTrigger>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3853.vb_a_490d892963">
     <script>pipeline{
     agent any
     
     stages {
-        stage(&apos;Build&apos;) {
+        stage(&apos;Fetch&apos;) {
             steps {
                 // Get some code from a GitHub repository
                 git branch: &apos;qualif&apos;, url: &apos;https://github.com/Gameplushy/FilRougeDevAvance&apos;
+            }
+        }
+        stage(&apos;Build&apos;) {
+            steps {
+                bat &apos;dotnet build&apos;
+                bat &apos;dotnet publish /p:EnvironmentName=Qualif&apos;
             }
         }
     }

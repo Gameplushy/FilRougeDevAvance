@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-
-namespace ConnectionToLife.Utils
+﻿namespace APICTL.Utils
 {
     public class ConfigReader
     {
@@ -15,6 +8,7 @@ namespace ConnectionToLife.Utils
         {
             Config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json")
                 .Build();
         }
 

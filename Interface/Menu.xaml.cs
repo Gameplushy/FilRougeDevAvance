@@ -1,5 +1,6 @@
-﻿using ConnectionToLife.Connection;
-using ConnectionToLife.GameOfLife;
+﻿using APICTL.Models;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows;
@@ -20,6 +21,8 @@ namespace Interface
         private Socket socket;
         private Rectangle[,] gridUI = new Rectangle[Board.BOARDSIZE,Board.BOARDSIZE];
 
+        private bool isIterating = false;
+
         public Menu(User user)
         {
             this.user = user;
@@ -30,6 +33,7 @@ namespace Interface
             socket = ChatClient.ConnectToChat(user.Username);
             chatThread = new Thread(new ThreadStart(() =>Listen(socket)));
             chatThread.Start();
+            //Création du tableau de manière dynamique
             for(int i = 0; i < Board.BOARDSIZE; i++)
             {
                 gdGOL.ColumnDefinitions.Add(new ColumnDefinition());
@@ -54,21 +58,30 @@ namespace Interface
             }
         }
 
-        void Iterate()
+        public async void Iterate()
         {
             try
             {
-
-                this.Dispatcher.Invoke(() => MakeGrid(board.DisplayBoard()));
-                for (int i = 0; i < 10000; i++)
+                this.Dispatcher.Invoke(() => MakeGrid(board.ToOneLine()));
+                using (var client = new HttpClient())
                 {
-                    GameRulesChecker.Iterate(board);
-                    this.Dispatcher.Invoke(() => MakeGrid(board.DisplayBoard()));
-                    try
+                    client.BaseAddress = new Uri("http://localhost:5085/");
+                    while (true)
                     {
-                        Thread.Sleep(500);
+                        try
+                        {
+                            Thread.Sleep(500);
+                        }
+                        catch (ThreadInterruptedException) { break; }
+
+                        HttpResponseMessage response = await client.PostAsJsonAsync("/Board", new BoardRequest(board));
+                        if (!isIterating) break;
+                        if (response.IsSuccessStatusCode)
+                        {
+                            board.FromString(await response.Content.ReadAsStringAsync());
+                            this.Dispatcher.Invoke(() => MakeGrid(board.ToOneLine()));
+                        }
                     }
-                    catch (ThreadInterruptedException tie) { break; }
                 }
             }
             catch (Exception)
@@ -82,11 +95,13 @@ namespace Interface
             if (iterationThread == null)
             {
                 iterationThread = new Thread(new ThreadStart(Iterate));
+                isIterating = true;
                 iterationThread.Start();
             }
             else
             {
                 iterationThread.Interrupt();
+                isIterating = false;
                 iterationThread = null;
                 await socket.SendAsync(board.ToBytes());
             }
@@ -97,6 +112,7 @@ namespace Interface
             await socket.SendAsync(Encoding.Unicode.GetBytes($"{user.Username}>{tbMessage.Text}"));
             tbMessage.Text = null;
         }
+
         public void Listen(Socket s)
         {
             try
@@ -123,25 +139,24 @@ namespace Interface
                     }
                 }
             }
-            catch (SocketException se)
+            catch (SocketException)
             {
                 s.Close();
             }
         }
 
+        /// <summary>
+        /// Applies the grid to the UI
+        /// </summary>
+        /// <param name="gridText"></param>
         private void MakeGrid(string gridText)
         {
-            for(int n = 0; n < Board.BOARDSIZE * Board.BOARDSIZE; n++)
+            int i = 0;
+            foreach(Rectangle rec in gridUI)
             {
-                Dispatcher.Invoke(() => gridUI[n / Board.BOARDSIZE, n % Board.BOARDSIZE].Fill = gridText[n] == 'X' ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.White));
-                
+                Dispatcher.Invoke(() => rec.Fill = gridText[i] == 'X' ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.White));
+                i++;
             }
-            /*StringBuilder sb = new();
-            for (int i = 0; i < (Board.BOARDSIZE * Board.BOARDSIZE); i += Board.BOARDSIZE)
-            {
-                sb.AppendLine(gridText.Substring(i, Board.BOARDSIZE));
-            }
-            Dispatcher.Invoke(() => tbGrid.Text = sb.ToString());*/
             board.FromString(gridText.Substring(0, Board.BOARDSIZE * Board.BOARDSIZE));
 
         }

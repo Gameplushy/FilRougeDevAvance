@@ -18,11 +18,8 @@
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
       <triggers>
-        <com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.38.0">
-          <spec></spec>
-        </com.cloudbees.jenkins.GitHubPushTrigger>
         <hudson.triggers.SCMTrigger>
-          <spec></spec>
+          <spec>H * * * *</spec>
           <ignorePostCommitHooks>false</ignorePostCommitHooks>
         </hudson.triggers.SCMTrigger>
       </triggers>
@@ -33,10 +30,16 @@
     agent any
     
     stages {
-        stage(&apos;Build&apos;) {
+        stage(&apos;Fetch&apos;) {
             steps {
                 // Get some code from a GitHub repository
                 git branch: &apos;dev&apos;, url: &apos;https://github.com/Gameplushy/FilRougeDevAvance&apos;
+            }
+        }
+        stage(&apos;Build&apos;) {
+            steps {
+                bat &apos;dotnet build&apos;
+                bat &apos;dotnet publish /p:EnvironmentName=Development&apos;
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿using ConnectionToLife.GameOfLife;
+﻿using APICTL.Models;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -10,11 +10,12 @@ namespace ChatServer
     {
         private static List<Socket> sockets = new();
 
+        //Utilisé pour le vote d'une nouvelle règle
         private static (string newRule, bool[] votes)? vote = null;
 
         public static async Task ConnectToChat()
         {
-            IPAddress ip = IPAddress.Parse("10.70.3.61");//IPAddress.Parse("192.168.1.11");//
+            IPAddress ip = IPAddress.Parse("127.0.0.1");
             Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             s.Bind(new IPEndPoint(ip, 6969));
             s.Listen(5);
@@ -45,20 +46,25 @@ namespace ChatServer
                     byte[] buffer = new byte[512];
                     s.Receive(buffer, 0, buffer.Length, SocketFlags.None);
                     string res = string.Join("", Encoding.Unicode.GetString(buffer).TakeWhile(c => c != 0));
+                    //Nouvelle grille
                     if (res == null || buffer[0] <= 1)
                     {
                         res = string.Join("", buffer.Take(Board.BOARDSIZE * Board.BOARDSIZE).Select(by => by == 1 ? 'X' : '·'));
                     }
+                    //Proposition de nouvelle règle
                     else if (vote==null && Regex.IsMatch(res, @"^.*\>RULE=[0-9]+A[0-9]+D$"))
                     {
                         bool[] bl = new bool[sockets.Count];
                         bl[sockets.IndexOf(s)] = true;
                         vote = (res.Split("=")[1], bl);
                     }
+                    //Vote
                     else if(vote != null && Regex.IsMatch(res, @"^.*\>[yn]$"))
                     {
+                        //Refus = on annule le vote
                         if (res.Last() == 'n')
                             vote = null;
+                        //Accepté = Si tous valident = envoi de la nouvelle règle
                         else
                         {
                             vote.Value.votes[sockets.IndexOf(s)] = true;
@@ -73,7 +79,7 @@ namespace ChatServer
                     Console.WriteLine(res);
                 }
             }
-            catch (SocketException se)
+            catch (SocketException)
             {
                 s.Close();
             }

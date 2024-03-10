@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using APICTL.Models;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Windows;
 
 namespace Interface
 {
@@ -12,21 +15,27 @@ namespace Interface
             InitializeComponent();
         }
 
-        private void btnConnect_Click(object sender, RoutedEventArgs e)
+        private async void btnConnect_Click(object sender, RoutedEventArgs e)
         {
-            var res = ConnectionToLife.Connection.UserAuth.ConnectionToDatabse(tbUsername.Text, pbPassword.Password);
-            if (!string.IsNullOrEmpty(res.error))
+            using (var client = new HttpClient())
             {
-                MessageBox.Show(res.error, "Connection error", MessageBoxButton.OK, MessageBoxImage.Error);
+                client.BaseAddress = new Uri("http://localhost:5085/");
+                HttpResponseMessage response = await client.PostAsJsonAsync("/Authentication", new Credentials() { Login = tbUsername.Text, Password = pbPassword.Password });
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<User>();
+                    var win = new Menu(result!);
+                    Visibility = Visibility.Hidden;
+                    win.Show();
+                    this.Close();
+
+                }
+                else
+                {
+                    MessageBox.Show("Bad credentials", "Connection error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
-            else
-            {
-                //MessageBox.Show($"Hello {res.res!.Username}!");
-                var win = new Menu(res.res);
-                Visibility = Visibility.Hidden;
-                win.Show();
-                this.Close();
-            }
+
         }
     }
 }
