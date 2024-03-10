@@ -33,6 +33,7 @@ namespace APICTL.Controllers
             {
                 for (int jOffset = -1; jOffset <= 1; jOffset++)
                 {
+                    //Ne pas regarder si hors limites
                     if ((iOffset == 0 && jOffset == 0) ||
                         (i + iOffset < 0 || j + jOffset < 0 || i + iOffset >= Board.BOARDSIZE || j + jOffset >= Board.BOARDSIZE))
                         continue;

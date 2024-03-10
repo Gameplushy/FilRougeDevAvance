@@ -112,6 +112,7 @@ namespace Interface
             await socket.SendAsync(Encoding.Unicode.GetBytes($"{user.Username}>{tbMessage.Text}"));
             tbMessage.Text = null;
         }
+
         public void Listen(Socket s)
         {
             try
@@ -144,6 +145,10 @@ namespace Interface
             }
         }
 
+        /// <summary>
+        /// Applies the grid to the UI
+        /// </summary>
+        /// <param name="gridText"></param>
         private void MakeGrid(string gridText)
         {
             int i = 0;
