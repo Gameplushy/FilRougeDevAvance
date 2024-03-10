@@ -1,10 +1,10 @@
 ﻿using System.Text;
 
-namespace ConnectionToLife.GameOfLife
+namespace APICTL.Models
 {
     public class Board
     {
-        public const int BOARDSIZE = 12;
+        public const int BOARDSIZE = 10;
 
         bool[,] board;
         List<int> birthRules;
@@ -41,16 +41,6 @@ namespace ConnectionToLife.GameOfLife
             }
         }
 
-        public string DisplayBoard()
-        {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < BOARDSIZE; i++)
-            {
-                sb.AppendLine(string.Join("", Enumerable.Range(0, BOARDSIZE).Select(e => board[i, e]).Select(b => b ? "X" : "·")));
-            }
-            return sb.ToString();
-        }
-
         public byte[] ToBytes()
         {
             List<byte> bytes = new();
@@ -59,6 +49,16 @@ namespace ConnectionToLife.GameOfLife
                 bytes.Add((byte)(b ? 1 : 0));
             }
             return bytes.ToArray();
+        }
+
+        public string ToOneLine()
+        {
+            string res = "";
+            foreach (bool b in board)
+            {
+                res += b ? "X" : "·";
+            }
+            return res;
         }
 
         public void FromString(string s)

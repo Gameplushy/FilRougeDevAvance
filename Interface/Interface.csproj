@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\APICTL\APICTL.csproj" />
     <ProjectReference Include="..\ChatServer\ChatServer.csproj" />
-    <ProjectReference Include="..\ConnectionToLife\ConnectionToLife.csproj" />
   </ItemGroup>
 
 </Project>
