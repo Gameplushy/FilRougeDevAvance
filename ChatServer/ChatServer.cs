@@ -73,7 +73,7 @@ namespace ChatServer
                     Console.WriteLine(res);
                 }
             }
-            catch (SocketException se)
+            catch (SocketException)
             {
                 s.Close();
             }

@@ -33,6 +33,7 @@ namespace Interface
             socket = ChatClient.ConnectToChat(user.Username);
             chatThread = new Thread(new ThreadStart(() =>Listen(socket)));
             chatThread.Start();
+            //Création du tableau de manière dynamique
             for(int i = 0; i < Board.BOARDSIZE; i++)
             {
                 gdGOL.ColumnDefinitions.Add(new ColumnDefinition());
@@ -67,6 +68,12 @@ namespace Interface
                     client.BaseAddress = new Uri("http://localhost:5085/");
                     while (true)
                     {
+                        try
+                        {
+                            Thread.Sleep(500);
+                        }
+                        catch (ThreadInterruptedException) { break; }
+
                         HttpResponseMessage response = await client.PostAsJsonAsync("/Board", new BoardRequest(board));
                         if (!isIterating) break;
                         if (response.IsSuccessStatusCode)
@@ -74,12 +81,6 @@ namespace Interface
                             board.FromString(await response.Content.ReadAsStringAsync());
                             this.Dispatcher.Invoke(() => MakeGrid(board.ToOneLine()));
                         }
-
-                        try
-                        {
-                            Thread.Sleep(500);
-                        }
-                        catch (ThreadInterruptedException tie) { break; }
                     }
                 }
             }
@@ -137,7 +138,7 @@ namespace Interface
                     }
                 }
             }
-            catch (SocketException se)
+            catch (SocketException)
             {
                 s.Close();
             }

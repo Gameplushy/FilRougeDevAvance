@@ -24,7 +24,7 @@ namespace Interface
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadFromJsonAsync<User>();
-                    var win = new Menu(result);
+                    var win = new Menu(result!);
                     Visibility = Visibility.Hidden;
                     win.Show();
                     this.Close();
