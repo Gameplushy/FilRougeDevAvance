@@ -9,6 +9,9 @@ Voir le zip dans l'onglet Releases du Git
 
 Veuiller démarrer le serveur (ChatServer) et l'API (APICTL) en localhost avant l'application (Interface).
 
+Pour l'API, vous devez au préalable changer la variable d'environnement ASPNETCORE_ENVIRONMENT avant de démarrer l'exécutable.
+Utilisez la commande `set ASPNETCORE_ENVIRONMENT` suivi de `Development`, `Qualif` ou `Prod` avant de démarrer l'API par console. 
+
 # Utilisation
 Connexion (login-mdp) : admin-admin ou test-sosis
 Le bouton start/stop permet de démarrer/arrêter la simulation, en fonction de la règle choisie.

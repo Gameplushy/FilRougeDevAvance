@@ -123,16 +123,19 @@ namespace Interface
                     s.Receive(buffer, 0, buffer.Length, SocketFlags.None);
                     iterationThread?.Interrupt();
                     string message = Encoding.Unicode.GetString(buffer);
+                    //Nouvelle règle
                     if (message.StartsWith("NEWRULE>"))
                     {
                         string newRule = message.Split(">")[1];
                         board.SetRules(newRule);
                         Dispatcher.Invoke(() => tbRules.Text = newRule);
                     }
+                    //Nouvelle grille
                     else if (message.Take(Board.BOARDSIZE*Board.BOARDSIZE).All(c=>c=='X'||c== '·'))
                     {
                         MakeGrid(message);
                     }
+                    //Message classique
                     else
                     {
                         Dispatcher.Invoke(() => tbChat.Text += message + '\n');
@@ -146,9 +149,8 @@ namespace Interface
         }
 
         /// <summary>
-        /// Applies the grid to the UI
+        /// Change l'IHM pour refléter l'état de la grille de la simulation
         /// </summary>
-        /// <param name="gridText"></param>
         private void MakeGrid(string gridText)
         {
             int i = 0;
